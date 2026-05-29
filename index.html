@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Imran Hasan — CSE, RUET</title>
+  <meta name="description" content="Personal portfolio of Imran Hasan, a Computer Science & Engineering student at Rajshahi University of Engineering & Technology (RUET).">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;1,400&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 1rem; line-height: 1.72; color: #222;
+      background: #f9f6f0; -webkit-font-smoothing: antialiased;
+    }
+    a { color: #8b1a1a; text-decoration: none; transition: color 0.2s ease; }
+    a:hover { color: #b02020; }
+
+    .wrapper {
+      max-width: 700px; margin: 0 auto; padding: 0 28px;
+      opacity: 0; transform: translateY(12px);
+      animation: fadeInPage 0.6s ease forwards;
+    }
+    @keyframes fadeInPage { to { opacity: 1; transform: translateY(0); } }
+
+    /* ── Header ── */
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 28px 0 18px; border-bottom: 1px solid #d4cec4;
+    }
+    .site-name {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1rem; font-weight: 400; color: #222; letter-spacing: 0.3px;
+    }
+    nav { display: flex; gap: 22px; flex-wrap: wrap; }
+    nav a {
+      font-size: 0.85rem; color: #666; letter-spacing: 0.3px;
+      padding-bottom: 2px; border-bottom: 1px solid transparent;
+      transition: color 0.2s ease, border-color 0.25s ease;
+    }
+    nav a:hover { color: #8b1a1a; }
+    nav a.active { border-bottom-color: #8b1a1a; color: #8b1a1a; }
+
+    /* ── Section labels (improved visibility) ── */
+    .section-label {
+      display: flex; align-items: center; gap: 16px;
+      margin-bottom: 32px;
+    }
+    .section-label span {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.15rem; font-weight: 500;
+      letter-spacing: 1.8px; color: #8b1a1a;
+      text-transform: uppercase; white-space: nowrap;
+    }
+    .section-label::after {
+      content: ''; flex: 1; height: 1.5px;
+      background: linear-gradient(to right, #d4cec4, transparent);
+    }
+
+    /* ── Intro ── */
+    .intro { padding: 64px 0 56px; }
+    .intro-row { display: flex; align-items: center; gap: 36px; }
+    .intro-illustration {
+      flex-shrink: 0;
+      animation: oogwayFloat 4s ease-in-out infinite alternate;
+      opacity: 0.88; transition: opacity 0.3s ease;
+    }
+    .intro-illustration:hover { opacity: 1; animation-play-state: paused; }
+    @keyframes oogwayFloat {
+      0% { transform: translateY(0); } 100% { transform: translateY(-6px); }
+    }
+    .intro-text { flex: 1; }
+    .intro-text h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 3rem; font-weight: 400; line-height: 1.12;
+      color: #111; margin-bottom: 10px;
+    }
+    .intro-subtitle {
+      font-family: 'Lora', Georgia, serif; font-size: 0.88rem;
+      color: #888; text-transform: uppercase; letter-spacing: 1.4px;
+      margin-bottom: 26px;
+    }
+    .intro-text p { font-size: 0.96rem; color: #444; margin-bottom: 14px; line-height: 1.78; }
+    .intro-text p:last-child { margin-bottom: 0; }
+
+    /* ── Projects ── */
+    .projects { padding: 48px 0 56px; }
+    .project-list { list-style: none; }
+    .project-card {
+      position: relative; border: 1px solid #ece8e0; border-radius: 6px;
+      padding: 22px 24px 20px; margin-bottom: 16px; cursor: pointer;
+      transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+    }
+    .project-card:hover {
+      transform: translateY(-2px); border-color: #d4cec4;
+      box-shadow: 0 4px 16px rgba(90, 74, 58, 0.06);
+    }
+    .project-tag {
+      position: absolute; top: 22px; right: 24px;
+      font-size: 0.66rem; text-transform: uppercase;
+      letter-spacing: 1.6px; color: #bbb; font-family: 'Lora', Georgia, serif;
+    }
+    .project-name {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.08rem; font-weight: 400; color: #8b1a1a;
+      margin-bottom: 6px; padding-right: 80px;
+    }
+    .project-desc { font-style: italic; font-size: 0.88rem; color: #666; line-height: 1.65; }
+    .project-details {
+      max-height: 0; overflow: hidden; opacity: 0; margin-top: 0;
+      transition: max-height 0.3s ease, margin-top 0.3s ease, opacity 0.3s ease;
+    }
+    .project-card.expanded .project-details { max-height: 120px; opacity: 1; margin-top: 16px; }
+    .project-details-inner {
+      padding-top: 14px; border-top: 1px dashed #e4dfd6;
+      font-size: 0.85rem; color: #888; font-style: italic;
+    }
+
+    /* ── Education Timeline ── */
+    .education { padding: 48px 0 56px; }
+    .timeline { position: relative; padding-left: 32px; }
+    .timeline::before {
+      content: ''; position: absolute; left: 7px; top: 6px; bottom: 6px;
+      width: 1.5px; background: #d4cec4;
+    }
+    .timeline-item { position: relative; margin-bottom: 36px; }
+    .timeline-item:last-child { margin-bottom: 0; }
+    .timeline-dot {
+      position: absolute; left: -32px; top: 5px;
+      width: 15px; height: 15px; border-radius: 50%;
+      border: 2px solid #8b1a1a; background: #f9f6f0;
+      z-index: 1;
+    }
+    .timeline-item.current .timeline-dot {
+      background: #8b1a1a;
+      box-shadow: 0 0 0 4px rgba(139, 26, 26, 0.12);
+    }
+    .timeline-institution {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: 1.02rem; font-weight: 500; color: #222; margin-bottom: 2px;
+    }
+    .timeline-degree { font-size: 0.9rem; color: #555; margin-bottom: 2px; }
+    .timeline-meta {
+      font-size: 0.82rem; color: #999; font-style: italic; letter-spacing: 0.3px;
+    }
+    .timeline-meta .badge {
+      display: inline-block; font-style: normal;
+      background: rgba(139,26,26,0.08); color: #8b1a1a;
+      padding: 1px 10px; border-radius: 10px; font-size: 0.75rem;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── Writing ── */
+    .writing { padding: 48px 0 56px; }
+    .writing-subtitle { font-style: italic; font-size: 0.9rem; color: #888; margin-bottom: 24px; }
+    .writing-item {
+      display: block; padding: 16px 0; border-bottom: 1px dashed #e4dfd6;
+      font-style: italic; font-size: 0.92rem; color: #999;
+    }
+
+    /* ── Contact ── */
+    .contact { padding: 48px 0 64px; }
+    .contact p { font-size: 0.95rem; color: #444; line-height: 1.75; margin-bottom: 24px; }
+    .contact-links { display: flex; gap: 14px; flex-wrap: wrap; }
+    .contact-links a {
+      display: inline-block; font-size: 0.84rem; padding: 9px 22px;
+      border: 1px solid #d4cec4; border-radius: 4px; color: #8b1a1a;
+      letter-spacing: 0.4px;
+      transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+    .contact-links a:hover { background: #8b1a1a; border-color: #8b1a1a; color: #f9f6f0; }
+
+    /* ── Footer ── */
+    footer {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 22px 0 32px; border-top: 1px solid #ddd8ce;
+      font-style: italic; font-size: 0.78rem; color: #bbb;
+      flex-wrap: wrap; gap: 8px;
+    }
+    footer a { color: #bbb; }
+    footer a:hover { color: #8b1a1a; }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .intro-row { flex-direction: column; text-align: center; }
+      .intro-illustration { margin-bottom: 8px; }
+      .intro-text h1 { font-size: 2.2rem; }
+      nav { gap: 14px; justify-content: flex-end; }
+      .project-tag { position: static; display: block; margin-bottom: 4px; }
+      .project-name { padding-right: 0; }
+      .timeline { padding-left: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+
+    <header>
+      <div class="site-name">Imran Hasan</div>
+      <nav>
+        <a href="#about">about</a>
+        <a href="#education">education</a>
+        <a href="#projects">projects</a>
+        <a href="#writing">writing</a>
+        <a href="#contact">contact</a>
+      </nav>
+    </header>
+
+    <!-- ═══ Intro / About ═══ -->
+    <section class="intro" id="about">
+      <div class="intro-row">
+        <div class="intro-illustration">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 280" width="130" height="210" aria-label="Illustration of a wise tortoise sage">
+            <!-- Staff (behind character) -->
+            <path d="M38,42 C36,38 32,32 28,30 C24,28 22,30 26,34 C30,36 34,38 38,42" fill="#b89e6a" stroke="#5a4a3a" stroke-width="1.2"/>
+            <line x1="38" y1="42" x2="52" y2="250" stroke="#b89e6a" stroke-width="3.5" stroke-linecap="round"/>
+            <path d="M28,30 C24,26 26,22 30,24 C34,26 36,30 38,34" fill="none" stroke="#b89e6a" stroke-width="2" stroke-linecap="round"/>
+
+            <!-- Shell (large domed, on back) -->
+            <ellipse cx="95" cy="120" rx="48" ry="58" fill="#7a8c5e" stroke="#5a4a3a" stroke-width="1.8"/>
+            <!-- Shell hex pattern -->
+            <path d="M95,62 L95,178" stroke="#6b7d50" stroke-width="1" opacity="0.5"/>
+            <path d="M47,120 L143,120" stroke="#6b7d50" stroke-width="1" opacity="0.5"/>
+            <path d="M58,78 L132,162" stroke="#6b7d50" stroke-width="0.8" opacity="0.4"/>
+            <path d="M132,78 L58,162" stroke="#6b7d50" stroke-width="0.8" opacity="0.4"/>
+            <polygon points="95,68 114,86 114,110 95,128 76,110 76,86" fill="none" stroke="#6b7d50" stroke-width="0.9" opacity="0.45"/>
+            <polygon points="95,128 114,140 114,160 95,175 76,160 76,140" fill="none" stroke="#6b7d50" stroke-width="0.9" opacity="0.45"/>
+            <!-- Shell rim highlight -->
+            <path d="M47,120 C50,92 68,65 95,62 C122,65 140,92 143,120" fill="none" stroke="#8fa06e" stroke-width="1.5" opacity="0.4"/>
+
+            <!-- Cape/robe draping from neck -->
+            <path d="M60,130 C55,155 50,190 52,230 C54,240 62,248 80,250 C85,250 88,248 90,245 C86,200 82,165 78,140 Z"
+                  fill="#6e8a52" stroke="#5a4a3a" stroke-width="1.3" opacity="0.85"/>
+            <path d="M65,145 C63,170 60,200 60,230" fill="none" stroke="#5a4a3a" stroke-width="0.6" opacity="0.3"/>
+
+            <!-- Body / torso (front) -->
+            <path d="M68,108 C64,125 60,148 58,170 C56,195 62,215 70,230 C76,238 84,242 92,240 C100,236 108,220 108,200 C108,178 104,148 100,125 C98,114 94,108 90,106 Z"
+                  fill="#c4a882" stroke="#5a4a3a" stroke-width="1.5"/>
+
+            <!-- Belly plate / plastron -->
+            <path d="M72,125 C70,145 68,170 70,200 C72,218 78,230 84,232 C90,230 96,218 96,200 C98,170 96,145 94,125 Z"
+                  fill="#ddd0b8" stroke="#5a4a3a" stroke-width="0.8" opacity="0.6"/>
+
+            <!-- Neck -->
+            <path d="M74,108 C72,96 70,86 70,78 C70,72 74,68 80,66 C86,68 90,72 90,78 C90,86 88,96 86,108"
+                  fill="#c4a882" stroke="#5a4a3a" stroke-width="1.5"/>
+
+            <!-- Head -->
+            <ellipse cx="80" cy="56" rx="22" ry="18" fill="#8da06a" stroke="#5a4a3a" stroke-width="1.5"/>
+            <!-- Head top ridge -->
+            <path d="M62,50 C68,42 80,38 92,42 C98,46 98,50 98,52" fill="none" stroke="#5a4a3a" stroke-width="0.8" opacity="0.4"/>
+
+            <!-- Eyes -->
+            <ellipse cx="72" cy="50" rx="4" ry="3.5" fill="#f5f0e8" stroke="#5a4a3a" stroke-width="1.0"/>
+            <circle cx="73" cy="50" r="1.8" fill="#3a3a2a"/>
+            <circle cx="73.6" cy="49.2" r="0.6" fill="#f5f0e8"/>
+
+            <!-- Brow -->
+            <path d="M66,45 C68,43 72,42 76,44" fill="none" stroke="#5a4a3a" stroke-width="1.2" stroke-linecap="round"/>
+
+            <!-- Mouth / knowing smile -->
+            <path d="M72,60 C75,63 80,64 84,62" fill="none" stroke="#5a4a3a" stroke-width="1.2" stroke-linecap="round"/>
+            <!-- Chin -->
+            <path d="M70,64 C74,68 82,68 86,64" fill="none" stroke="#5a4a3a" stroke-width="0.7" opacity="0.35"/>
+
+            <!-- Wrinkles near eye -->
+            <path d="M64,48 C63,50 63,52 64,54" fill="none" stroke="#5a4a3a" stroke-width="0.5" opacity="0.4"/>
+
+            <!-- Neck wrap / scarf -->
+            <path d="M68,78 C72,82 82,84 90,80" fill="none" stroke="#d4cec4" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
+            <path d="M68,78 C72,82 82,84 90,80" fill="none" stroke="#5a4a3a" stroke-width="0.8" opacity="0.3"/>
+
+            <!-- Left arm (holding staff) -->
+            <path d="M64,135 C56,145 48,160 44,175 C42,182 44,186 48,184"
+                  fill="#c4a882" stroke="#5a4a3a" stroke-width="1.5" stroke-linecap="round"/>
+            <!-- Left hand gripping staff -->
+            <ellipse cx="48" cy="180" rx="6" ry="5" fill="#c4a882" stroke="#5a4a3a" stroke-width="1.0"/>
+            <!-- Claws on left hand -->
+            <path d="M43,177 C40,175 39,173" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
+            <path d="M42,180 C39,179 38,177" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
+            <path d="M43,183 C40,183 39,181" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
+
+            <!-- Right arm -->
+            <path d="M100,135 C108,148 114,165 116,180"
+                  fill="none" stroke="#5a4a3a" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M98,135 C106,148 112,164 114,178 C114,182 112,184 108,182 C106,178 104,170 100,160"
+                  fill="#c4a882" stroke="#5a4a3a" stroke-width="1.2"/>
+            <!-- Claws on right hand -->
+            <path d="M116,180 C119,182 120,184" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
+            <path d="M115,183 C118,186 119,188" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
+            <path d="M113,185 C115,188 116,191" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
+
+            <!-- Legs -->
+            <path d="M72,228 C68,242 64,254 62,262 C60,268 64,272 70,270 C76,268 78,260 76,250 C76,244 76,238 76,234"
+                  fill="#c4a882" stroke="#5a4a3a" stroke-width="1.3"/>
+            <path d="M88,228 C92,242 96,254 98,262 C100,268 96,272 90,270 C84,268 82,260 84,250 C84,244 84,238 84,234"
+                  fill="#c4a882" stroke="#5a4a3a" stroke-width="1.3"/>
+            <!-- Toes/claws -->
+            <path d="M62,268 C58,270 56,272" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
+            <path d="M66,270 C63,273 62,275" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
+            <path d="M70,270 C68,274 68,276" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
+            <path d="M98,268 C102,270 104,272" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
+            <path d="M94,270 C97,273 98,275" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
+            <path d="M90,270 C92,274 92,276" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
+          </svg>
+        </div>
+
+        <div class="intro-text">
+          <h1>Imran<br>Hasan.</h1>
+          <div class="intro-subtitle">CSE · RUET · 3rd Semester</div>
+          <p>I study Computer Science &amp; Engineering at <a href="https://www.ruet.ac.bd" target="_blank" rel="noopener">Rajshahi University of Engineering &amp; Technology</a>. My curiosity lives at the boundary of hardware and software — circuit design, embedded systems, and the logic underneath everything.</p>
+          <p>Outside the lab I write about science and the ideas that don't leave me alone.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Education ═══ -->
+    <section class="education" id="education">
+      <div class="section-label"><span>Education</span></div>
+      <div class="timeline">
+        <div class="timeline-item current">
+          <div class="timeline-dot"></div>
+          <div class="timeline-institution">Rajshahi University of Engineering &amp; Technology</div>
+          <div class="timeline-degree">B.Sc in Computer Science &amp; Engineering</div>
+          <div class="timeline-meta"><span class="badge">Studying</span></div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-institution">BPATC School &amp; College</div>
+          <div class="timeline-degree">Higher School Certificate</div>
+          <div class="timeline-meta">GPA: 5.00</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-institution">Tangail Residential School</div>
+          <div class="timeline-degree">Secondary School Certificate</div>
+          <div class="timeline-meta">GPA: 5.00</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Projects ═══ -->
+    <section class="projects" id="projects">
+      <div class="section-label"><span>Projects</span></div>
+      <ul class="project-list">
+        <li class="project-card" id="project-1">
+          <span class="project-tag">Embedded</span>
+          <div class="project-name">Obstacle Avoiding Robot</div>
+          <div class="project-desc">Autonomous navigation using ultrasonic sensors — detects and avoids obstacles in real time.</div>
+          <div class="project-details"><div class="project-details-inner">More details coming soon.</div></div>
+        </li>
+        <li class="project-card" id="project-2">
+          <span class="project-tag">IoT</span>
+          <div class="project-name">Water Quality Monitor &amp; Auto Pump</div>
+          <div class="project-desc">Sensor-based system that reads water quality and triggers a pump automatically based on thresholds.</div>
+          <div class="project-details"><div class="project-details-inner">More details coming soon.</div></div>
+        </li>
+        <li class="project-card" id="project-3">
+          <span class="project-tag">Software</span>
+          <div class="project-name">Bus E-Ticket System</div>
+          <div class="project-desc">Digital ticketing for public buses — simplifies fare collection and eliminates paper tickets.</div>
+          <div class="project-details"><div class="project-details-inner">More details coming soon.</div></div>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ═══ Writing ═══ -->
+    <section class="writing" id="writing">
+      <div class="section-label"><span>Writing</span></div>
+      <p class="writing-subtitle">Articles on science, engineering &amp; whatever I find worth thinking about.</p>
+      <span class="writing-item">First article coming soon</span>
+    </section>
+
+    <!-- ═══ Contact ═══ -->
+    <section class="contact" id="contact">
+      <div class="section-label"><span>Contact</span></div>
+      <p>For questions, collaborations, or just to say hello — reach me at <a href="mailto:imranhsn.cs@gmail.com">imranhsn.cs@gmail.com</a></p>
+      <div class="contact-links">
+        <a href="mailto:imranhsn.cs@gmail.com" target="_blank" rel="noopener">Email ↗</a>
+        <a href="https://github.com/aluchashi" target="_blank" rel="noopener">GitHub ↗</a>
+        <a href="https://www.linkedin.com/in/imranhsnbd/" target="_blank" rel="noopener">LinkedIn ↗</a>
+      </div>
+    </section>
+
+    <footer>
+      <span>© 2026 Imran Hasan</span>
+      <span>
+        <a href="https://github.com/aluchashi" target="_blank" rel="noopener">GitHub</a> · <a href="https://www.linkedin.com/in/imranhsnbd/" target="_blank" rel="noopener">LinkedIn</a>
+      </span>
+    </footer>
+  </div>
+
+  <script>
+    document.querySelectorAll('.project-card').forEach(card => {
+      card.addEventListener('click', () => card.classList.toggle('expanded'));
+    });
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('nav a');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute('id');
+          navLinks.forEach(link => link.classList.toggle('active', link.getAttribute('href') === '#' + id));
+        }
+      });
+    }, { rootMargin: '-20% 0px -60% 0px', threshold: 0 });
+    sections.forEach(s => observer.observe(s));
+  </script>
+</body>
+</html>
