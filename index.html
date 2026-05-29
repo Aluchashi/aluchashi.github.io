@@ -9,8 +9,21 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;1,400&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    /* ── Custom Pixel Cursor ── */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; cursor: none !important; }
     html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+    #pixel-cursor {
+      position: fixed;
+      top: 0; left: 0;
+      width: 16px; height: 16px;
+      pointer-events: none;
+      z-index: 99999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.05s linear;
+      image-rendering: pixelated;
+    }
+
     body {
       font-family: 'Lora', Georgia, serif;
       font-size: 1rem; line-height: 1.72; color: #222;
@@ -44,7 +57,7 @@
     nav a:hover { color: #8b1a1a; }
     nav a.active { border-bottom-color: #8b1a1a; color: #8b1a1a; }
 
-    /* ── Section labels (improved visibility) ── */
+    /* ── Section labels ── */
     .section-label {
       display: flex; align-items: center; gap: 16px;
       margin-bottom: 32px;
@@ -63,15 +76,93 @@
     /* ── Intro ── */
     .intro { padding: 64px 0 56px; }
     .intro-row { display: flex; align-items: center; gap: 36px; }
+
+    /* ── Oogway Interactive ── */
     .intro-illustration {
       flex-shrink: 0;
-      animation: oogwayFloat 4s ease-in-out infinite alternate;
-      opacity: 0.88; transition: opacity 0.3s ease;
+      position: relative;
+      opacity: 0.9;
     }
-    .intro-illustration:hover { opacity: 1; animation-play-state: paused; }
+
+    .oogway-wrap {
+      position: relative;
+      width: 130px; height: 210px;
+    }
+
+    /* Floating animation — CSS only */
+    .oogway-svg {
+      animation: oogwayFloat 4s ease-in-out infinite;
+      display: block;
+      transition: filter 0.3s ease;
+    }
+
     @keyframes oogwayFloat {
-      0% { transform: translateY(0); } 100% { transform: translateY(-6px); }
+      0%   { transform: translateY(0px) rotate(0deg); }
+      25%  { transform: translateY(-5px) rotate(-0.5deg); }
+      50%  { transform: translateY(-8px) rotate(0deg); }
+      75%  { transform: translateY(-4px) rotate(0.5deg); }
+      100% { transform: translateY(0px) rotate(0deg); }
     }
+
+    /* Hover: pause + glow */
+    .oogway-wrap:hover .oogway-svg {
+      animation-play-state: paused;
+      filter: drop-shadow(0 0 10px rgba(139, 26, 26, 0.35)) drop-shadow(0 0 20px rgba(139, 26, 26, 0.15));
+    }
+
+    /* Eye twinkle on hover */
+    .oogway-wrap:hover .eye-inner { fill: #8b1a1a; }
+    .eye-inner { transition: fill 0.3s ease; }
+
+    /* Thought bubble on hover */
+    .oogway-thought {
+      position: absolute;
+      top: -48px; left: 0; right: 0;
+      opacity: 0;
+      transform: translateY(6px) scale(0.92);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
+      text-align: center;
+    }
+    .oogway-wrap:hover .oogway-thought {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    .oogway-thought span {
+      display: inline-block;
+      font-family: 'Playfair Display', Georgia, serif;
+      font-style: italic;
+      font-size: 0.68rem;
+      color: #8b1a1a;
+      background: #fff8f0;
+      border: 1px solid #e4cec4;
+      border-radius: 12px;
+      padding: 4px 12px;
+      box-shadow: 0 2px 8px rgba(139, 26, 26, 0.08);
+      white-space: nowrap;
+    }
+    /* Tail of thought bubble */
+    .oogway-thought::after {
+      content: '';
+      display: block;
+      width: 6px; height: 6px;
+      background: #fff8f0;
+      border-right: 1px solid #e4cec4;
+      border-bottom: 1px solid #e4cec4;
+      transform: rotate(45deg) translateX(-50%);
+      margin: -3px auto 0;
+    }
+
+    /* Staff wiggle on hover */
+    .oogway-wrap:hover .staff-line {
+      animation: staffWiggle 0.6s ease-in-out infinite alternate;
+      transform-origin: 52px 250px;
+    }
+    @keyframes staffWiggle {
+      0%   { transform: rotate(-1.5deg); }
+      100% { transform: rotate(1.5deg); }
+    }
+
     .intro-text { flex: 1; }
     .intro-text h1 {
       font-family: 'Playfair Display', Georgia, serif;
@@ -81,8 +172,22 @@
     .intro-subtitle {
       font-family: 'Lora', Georgia, serif; font-size: 0.88rem;
       color: #888; text-transform: uppercase; letter-spacing: 1.4px;
-      margin-bottom: 26px;
+      margin-bottom: 10px;
     }
+    /* Interest tags */
+    .interest-tags {
+      display: flex; flex-wrap: wrap; gap: 6px;
+      margin-bottom: 22px;
+    }
+    .tag {
+      font-size: 0.7rem; letter-spacing: 0.8px; text-transform: uppercase;
+      padding: 3px 10px; border-radius: 10px;
+      background: rgba(139,26,26,0.07); color: #8b1a1a;
+      border: 1px solid rgba(139,26,26,0.15);
+      font-family: 'Lora', Georgia, serif;
+      transition: background 0.2s ease;
+    }
+    .tag:hover { background: rgba(139,26,26,0.14); }
     .intro-text p { font-size: 0.96rem; color: #444; margin-bottom: 14px; line-height: 1.78; }
     .intro-text p:last-child { margin-bottom: 0; }
 
@@ -91,7 +196,7 @@
     .project-list { list-style: none; }
     .project-card {
       position: relative; border: 1px solid #ece8e0; border-radius: 6px;
-      padding: 22px 24px 20px; margin-bottom: 16px; cursor: pointer;
+      padding: 22px 24px 20px; margin-bottom: 16px; cursor: none;
       transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
     }
     .project-card:hover {
@@ -111,13 +216,46 @@
     .project-desc { font-style: italic; font-size: 0.88rem; color: #666; line-height: 1.65; }
     .project-details {
       max-height: 0; overflow: hidden; opacity: 0; margin-top: 0;
-      transition: max-height 0.3s ease, margin-top 0.3s ease, opacity 0.3s ease;
+      transition: max-height 0.35s ease, margin-top 0.3s ease, opacity 0.3s ease;
     }
-    .project-card.expanded .project-details { max-height: 120px; opacity: 1; margin-top: 16px; }
+    .project-card.expanded .project-details { max-height: 260px; opacity: 1; margin-top: 16px; }
     .project-details-inner {
       padding-top: 14px; border-top: 1px dashed #e4dfd6;
-      font-size: 0.85rem; color: #888; font-style: italic;
+      font-size: 0.85rem; color: #666; line-height: 1.7;
     }
+    .project-details-inner ul {
+      margin: 8px 0 0 0;
+      padding-left: 18px;
+    }
+    .project-details-inner ul li {
+      font-style: italic;
+      color: #888;
+      font-size: 0.82rem;
+      margin-bottom: 3px;
+    }
+    .project-link {
+      display: inline-block; margin-top: 12px;
+      font-size: 0.78rem; letter-spacing: 0.6px;
+      color: #8b1a1a; border-bottom: 1px solid rgba(139,26,26,0.3);
+      padding-bottom: 1px;
+      transition: border-color 0.2s ease;
+    }
+    .project-link:hover { border-color: #8b1a1a; }
+    .project-tech {
+      display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px;
+    }
+    .tech-pill {
+      font-size: 0.65rem; letter-spacing: 0.8px; text-transform: uppercase;
+      padding: 2px 8px; border-radius: 8px;
+      background: #f3ede4; color: #8a7560;
+      border: 1px solid #e4d8c8;
+    }
+    /* Click hint */
+    .project-hint {
+      font-size: 0.68rem; color: #ccc; letter-spacing: 0.5px;
+      margin-top: 8px; font-style: italic;
+    }
+    .project-card.expanded .project-hint { display: none; }
 
     /* ── Education Timeline ── */
     .education { padding: 48px 0 56px; }
@@ -192,10 +330,15 @@
       .project-tag { position: static; display: block; margin-bottom: 4px; }
       .project-name { padding-right: 0; }
       .timeline { padding-left: 28px; }
+      .interest-tags { justify-content: center; }
     }
   </style>
 </head>
 <body>
+
+  <!-- ═══ Pixel Cursor ═══ -->
+  <canvas id="pixel-cursor" width="24" height="24"></canvas>
+
   <div class="wrapper">
 
     <header>
@@ -213,105 +356,97 @@
     <section class="intro" id="about">
       <div class="intro-row">
         <div class="intro-illustration">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 280" width="130" height="210" aria-label="Illustration of a wise tortoise sage">
-            <!-- Staff (behind character) -->
-            <path d="M38,42 C36,38 32,32 28,30 C24,28 22,30 26,34 C30,36 34,38 38,42" fill="#b89e6a" stroke="#5a4a3a" stroke-width="1.2"/>
-            <line x1="38" y1="42" x2="52" y2="250" stroke="#b89e6a" stroke-width="3.5" stroke-linecap="round"/>
-            <path d="M28,30 C24,26 26,22 30,24 C34,26 36,30 38,34" fill="none" stroke="#b89e6a" stroke-width="2" stroke-linecap="round"/>
+          <div class="oogway-wrap" title="Hover to see wisdom">
+            <!-- Thought bubble -->
+            <div class="oogway-thought">
+              <span>there are no accidents.</span>
+            </div>
 
-            <!-- Shell (large domed, on back) -->
-            <ellipse cx="95" cy="120" rx="48" ry="58" fill="#7a8c5e" stroke="#5a4a3a" stroke-width="1.8"/>
-            <!-- Shell hex pattern -->
-            <path d="M95,62 L95,178" stroke="#6b7d50" stroke-width="1" opacity="0.5"/>
-            <path d="M47,120 L143,120" stroke="#6b7d50" stroke-width="1" opacity="0.5"/>
-            <path d="M58,78 L132,162" stroke="#6b7d50" stroke-width="0.8" opacity="0.4"/>
-            <path d="M132,78 L58,162" stroke="#6b7d50" stroke-width="0.8" opacity="0.4"/>
-            <polygon points="95,68 114,86 114,110 95,128 76,110 76,86" fill="none" stroke="#6b7d50" stroke-width="0.9" opacity="0.45"/>
-            <polygon points="95,128 114,140 114,160 95,175 76,160 76,140" fill="none" stroke="#6b7d50" stroke-width="0.9" opacity="0.45"/>
-            <!-- Shell rim highlight -->
-            <path d="M47,120 C50,92 68,65 95,62 C122,65 140,92 143,120" fill="none" stroke="#8fa06e" stroke-width="1.5" opacity="0.4"/>
+            <svg class="oogway-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 280" width="130" height="210" aria-label="Illustration of a wise tortoise sage">
+              <!-- Staff (behind character) -->
+              <path d="M38,42 C36,38 32,32 28,30 C24,28 22,30 26,34 C30,36 34,38 38,42" fill="#b89e6a" stroke="#5a4a3a" stroke-width="1.2"/>
+              <line class="staff-line" x1="38" y1="42" x2="52" y2="250" stroke="#b89e6a" stroke-width="3.5" stroke-linecap="round"/>
+              <path d="M28,30 C24,26 26,22 30,24 C34,26 36,30 38,34" fill="none" stroke="#b89e6a" stroke-width="2" stroke-linecap="round"/>
 
-            <!-- Cape/robe draping from neck -->
-            <path d="M60,130 C55,155 50,190 52,230 C54,240 62,248 80,250 C85,250 88,248 90,245 C86,200 82,165 78,140 Z"
-                  fill="#6e8a52" stroke="#5a4a3a" stroke-width="1.3" opacity="0.85"/>
-            <path d="M65,145 C63,170 60,200 60,230" fill="none" stroke="#5a4a3a" stroke-width="0.6" opacity="0.3"/>
+              <!-- Shell -->
+              <ellipse cx="95" cy="120" rx="48" ry="58" fill="#7a8c5e" stroke="#5a4a3a" stroke-width="1.8"/>
+              <path d="M95,62 L95,178" stroke="#6b7d50" stroke-width="1" opacity="0.5"/>
+              <path d="M47,120 L143,120" stroke="#6b7d50" stroke-width="1" opacity="0.5"/>
+              <path d="M58,78 L132,162" stroke="#6b7d50" stroke-width="0.8" opacity="0.4"/>
+              <path d="M132,78 L58,162" stroke="#6b7d50" stroke-width="0.8" opacity="0.4"/>
+              <polygon points="95,68 114,86 114,110 95,128 76,110 76,86" fill="none" stroke="#6b7d50" stroke-width="0.9" opacity="0.45"/>
+              <polygon points="95,128 114,140 114,160 95,175 76,160 76,140" fill="none" stroke="#6b7d50" stroke-width="0.9" opacity="0.45"/>
+              <path d="M47,120 C50,92 68,65 95,62 C122,65 140,92 143,120" fill="none" stroke="#8fa06e" stroke-width="1.5" opacity="0.4"/>
 
-            <!-- Body / torso (front) -->
-            <path d="M68,108 C64,125 60,148 58,170 C56,195 62,215 70,230 C76,238 84,242 92,240 C100,236 108,220 108,200 C108,178 104,148 100,125 C98,114 94,108 90,106 Z"
-                  fill="#c4a882" stroke="#5a4a3a" stroke-width="1.5"/>
+              <!-- Cape -->
+              <path d="M60,130 C55,155 50,190 52,230 C54,240 62,248 80,250 C85,250 88,248 90,245 C86,200 82,165 78,140 Z" fill="#6e8a52" stroke="#5a4a3a" stroke-width="1.3" opacity="0.85"/>
+              <path d="M65,145 C63,170 60,200 60,230" fill="none" stroke="#5a4a3a" stroke-width="0.6" opacity="0.3"/>
 
-            <!-- Belly plate / plastron -->
-            <path d="M72,125 C70,145 68,170 70,200 C72,218 78,230 84,232 C90,230 96,218 96,200 C98,170 96,145 94,125 Z"
-                  fill="#ddd0b8" stroke="#5a4a3a" stroke-width="0.8" opacity="0.6"/>
+              <!-- Body -->
+              <path d="M68,108 C64,125 60,148 58,170 C56,195 62,215 70,230 C76,238 84,242 92,240 C100,236 108,220 108,200 C108,178 104,148 100,125 C98,114 94,108 90,106 Z" fill="#c4a882" stroke="#5a4a3a" stroke-width="1.5"/>
+              <path d="M72,125 C70,145 68,170 70,200 C72,218 78,230 84,232 C90,230 96,218 96,200 C98,170 96,145 94,125 Z" fill="#ddd0b8" stroke="#5a4a3a" stroke-width="0.8" opacity="0.6"/>
 
-            <!-- Neck -->
-            <path d="M74,108 C72,96 70,86 70,78 C70,72 74,68 80,66 C86,68 90,72 90,78 C90,86 88,96 86,108"
-                  fill="#c4a882" stroke="#5a4a3a" stroke-width="1.5"/>
+              <!-- Neck -->
+              <path d="M74,108 C72,96 70,86 70,78 C70,72 74,68 80,66 C86,68 90,72 90,78 C90,86 88,96 86,108" fill="#c4a882" stroke="#5a4a3a" stroke-width="1.5"/>
 
-            <!-- Head -->
-            <ellipse cx="80" cy="56" rx="22" ry="18" fill="#8da06a" stroke="#5a4a3a" stroke-width="1.5"/>
-            <!-- Head top ridge -->
-            <path d="M62,50 C68,42 80,38 92,42 C98,46 98,50 98,52" fill="none" stroke="#5a4a3a" stroke-width="0.8" opacity="0.4"/>
+              <!-- Head -->
+              <ellipse cx="80" cy="56" rx="22" ry="18" fill="#8da06a" stroke="#5a4a3a" stroke-width="1.5"/>
+              <path d="M62,50 C68,42 80,38 92,42 C98,46 98,50 98,52" fill="none" stroke="#5a4a3a" stroke-width="0.8" opacity="0.4"/>
 
-            <!-- Eyes -->
-            <ellipse cx="72" cy="50" rx="4" ry="3.5" fill="#f5f0e8" stroke="#5a4a3a" stroke-width="1.0"/>
-            <circle cx="73" cy="50" r="1.8" fill="#3a3a2a"/>
-            <circle cx="73.6" cy="49.2" r="0.6" fill="#f5f0e8"/>
+              <!-- Eyes -->
+              <ellipse cx="72" cy="50" rx="4" ry="3.5" fill="#f5f0e8" stroke="#5a4a3a" stroke-width="1.0"/>
+              <circle class="eye-inner" cx="73" cy="50" r="1.8" fill="#3a3a2a"/>
+              <circle cx="73.6" cy="49.2" r="0.6" fill="#f5f0e8"/>
 
-            <!-- Brow -->
-            <path d="M66,45 C68,43 72,42 76,44" fill="none" stroke="#5a4a3a" stroke-width="1.2" stroke-linecap="round"/>
+              <!-- Brow -->
+              <path d="M66,45 C68,43 72,42 76,44" fill="none" stroke="#5a4a3a" stroke-width="1.2" stroke-linecap="round"/>
 
-            <!-- Mouth / knowing smile -->
-            <path d="M72,60 C75,63 80,64 84,62" fill="none" stroke="#5a4a3a" stroke-width="1.2" stroke-linecap="round"/>
-            <!-- Chin -->
-            <path d="M70,64 C74,68 82,68 86,64" fill="none" stroke="#5a4a3a" stroke-width="0.7" opacity="0.35"/>
+              <!-- Smile -->
+              <path d="M72,60 C75,63 80,64 84,62" fill="none" stroke="#5a4a3a" stroke-width="1.2" stroke-linecap="round"/>
+              <path d="M70,64 C74,68 82,68 86,64" fill="none" stroke="#5a4a3a" stroke-width="0.7" opacity="0.35"/>
+              <path d="M64,48 C63,50 63,52 64,54" fill="none" stroke="#5a4a3a" stroke-width="0.5" opacity="0.4"/>
 
-            <!-- Wrinkles near eye -->
-            <path d="M64,48 C63,50 63,52 64,54" fill="none" stroke="#5a4a3a" stroke-width="0.5" opacity="0.4"/>
+              <!-- Neck wrap -->
+              <path d="M68,78 C72,82 82,84 90,80" fill="none" stroke="#d4cec4" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
+              <path d="M68,78 C72,82 82,84 90,80" fill="none" stroke="#5a4a3a" stroke-width="0.8" opacity="0.3"/>
 
-            <!-- Neck wrap / scarf -->
-            <path d="M68,78 C72,82 82,84 90,80" fill="none" stroke="#d4cec4" stroke-width="3" stroke-linecap="round" opacity="0.7"/>
-            <path d="M68,78 C72,82 82,84 90,80" fill="none" stroke="#5a4a3a" stroke-width="0.8" opacity="0.3"/>
+              <!-- Left arm -->
+              <path d="M64,135 C56,145 48,160 44,175 C42,182 44,186 48,184" fill="#c4a882" stroke="#5a4a3a" stroke-width="1.5" stroke-linecap="round"/>
+              <ellipse cx="48" cy="180" rx="6" ry="5" fill="#c4a882" stroke="#5a4a3a" stroke-width="1.0"/>
+              <path d="M43,177 C40,175 39,173" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
+              <path d="M42,180 C39,179 38,177" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
+              <path d="M43,183 C40,183 39,181" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
 
-            <!-- Left arm (holding staff) -->
-            <path d="M64,135 C56,145 48,160 44,175 C42,182 44,186 48,184"
-                  fill="#c4a882" stroke="#5a4a3a" stroke-width="1.5" stroke-linecap="round"/>
-            <!-- Left hand gripping staff -->
-            <ellipse cx="48" cy="180" rx="6" ry="5" fill="#c4a882" stroke="#5a4a3a" stroke-width="1.0"/>
-            <!-- Claws on left hand -->
-            <path d="M43,177 C40,175 39,173" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
-            <path d="M42,180 C39,179 38,177" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
-            <path d="M43,183 C40,183 39,181" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
+              <!-- Right arm -->
+              <path d="M98,135 C106,148 112,164 114,178 C114,182 112,184 108,182 C106,178 104,170 100,160" fill="#c4a882" stroke="#5a4a3a" stroke-width="1.2"/>
+              <path d="M116,180 C119,182 120,184" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
+              <path d="M115,183 C118,186 119,188" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
+              <path d="M113,185 C115,188 116,191" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
 
-            <!-- Right arm -->
-            <path d="M100,135 C108,148 114,165 116,180"
-                  fill="none" stroke="#5a4a3a" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M98,135 C106,148 112,164 114,178 C114,182 112,184 108,182 C106,178 104,170 100,160"
-                  fill="#c4a882" stroke="#5a4a3a" stroke-width="1.2"/>
-            <!-- Claws on right hand -->
-            <path d="M116,180 C119,182 120,184" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
-            <path d="M115,183 C118,186 119,188" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
-            <path d="M113,185 C115,188 116,191" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
-
-            <!-- Legs -->
-            <path d="M72,228 C68,242 64,254 62,262 C60,268 64,272 70,270 C76,268 78,260 76,250 C76,244 76,238 76,234"
-                  fill="#c4a882" stroke="#5a4a3a" stroke-width="1.3"/>
-            <path d="M88,228 C92,242 96,254 98,262 C100,268 96,272 90,270 C84,268 82,260 84,250 C84,244 84,238 84,234"
-                  fill="#c4a882" stroke="#5a4a3a" stroke-width="1.3"/>
-            <!-- Toes/claws -->
-            <path d="M62,268 C58,270 56,272" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
-            <path d="M66,270 C63,273 62,275" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
-            <path d="M70,270 C68,274 68,276" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
-            <path d="M98,268 C102,270 104,272" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
-            <path d="M94,270 C97,273 98,275" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
-            <path d="M90,270 C92,274 92,276" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
-          </svg>
+              <!-- Legs -->
+              <path d="M72,228 C68,242 64,254 62,262 C60,268 64,272 70,270 C76,268 78,260 76,250 C76,244 76,238 76,234" fill="#c4a882" stroke="#5a4a3a" stroke-width="1.3"/>
+              <path d="M88,228 C92,242 96,254 98,262 C100,268 96,272 90,270 C84,268 82,260 84,250 C84,244 84,238 84,234" fill="#c4a882" stroke="#5a4a3a" stroke-width="1.3"/>
+              <path d="M62,268 C58,270 56,272" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
+              <path d="M66,270 C63,273 62,275" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
+              <path d="M70,270 C68,274 68,276" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
+              <path d="M98,268 C102,270 104,272" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
+              <path d="M94,270 C97,273 98,275" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
+              <path d="M90,270 C92,274 92,276" fill="none" stroke="#5a4a3a" stroke-width="1.0" stroke-linecap="round"/>
+            </svg>
+          </div>
         </div>
 
         <div class="intro-text">
           <h1>Imran<br>Hasan.</h1>
           <div class="intro-subtitle">CSE · RUET · 3rd Semester</div>
+          <div class="interest-tags">
+            <span class="tag">Machine Learning</span>
+            <span class="tag">Flutter</span>
+            <span class="tag">Embedded Systems</span>
+            <span class="tag">Problem Solver</span>
+          </div>
           <p>I study Computer Science &amp; Engineering at <a href="https://www.ruet.ac.bd" target="_blank" rel="noopener">Rajshahi University of Engineering &amp; Technology</a>. My curiosity lives at the boundary of hardware and software — circuit design, embedded systems, and the logic underneath everything.</p>
+          <p>Currently exploring <strong>Machine Learning</strong> and building cross-platform apps as a <strong>Flutter explorer</strong>. I love solving problems — whether in code, mathematics, or everyday life. Give me a challenge and I'll find a way through it.</p>
           <p>Outside the lab I write about science and the ideas that don't leave me alone.</p>
         </div>
       </div>
@@ -346,24 +481,105 @@
     <section class="projects" id="projects">
       <div class="section-label"><span>Projects</span></div>
       <ul class="project-list">
+
         <li class="project-card" id="project-1">
           <span class="project-tag">Embedded</span>
           <div class="project-name">Obstacle Avoiding Robot</div>
-          <div class="project-desc">Autonomous navigation using ultrasonic sensors — detects and avoids obstacles in real time.</div>
-          <div class="project-details"><div class="project-details-inner">More details coming soon.</div></div>
+          <div class="project-desc">Autonomous navigation using ultrasonic sensors — detects and avoids obstacles in real time without human control.</div>
+          <div class="project-hint">↓ click to expand</div>
+          <div class="project-details">
+            <div class="project-details-inner">
+              An Arduino-based autonomous robot that uses HC-SR04 ultrasonic sensors to measure distance and navigate around obstacles dynamically. The robot continuously scans its surroundings and adjusts direction in real time using a servo motor for sensor rotation.
+              <ul>
+                <li>Ultrasonic distance sensing with real-time obstacle detection</li>
+                <li>Servo-mounted sensor for 180° environment scanning</li>
+                <li>Autonomous decision logic for left/right/forward navigation</li>
+                <li>DC motor control via L298N motor driver</li>
+              </ul>
+              <div class="project-tech">
+                <span class="tech-pill">Arduino</span>
+                <span class="tech-pill">C++</span>
+                <span class="tech-pill">HC-SR04</span>
+                <span class="tech-pill">L298N</span>
+                <span class="tech-pill">Servo</span>
+              </div>
+              <a class="project-link" href="https://drive.google.com/file/d/1uFpGgUoiS3XvRWALm8M3XQSdf-sgCYlB/view?usp=drive_link" target="_blank" rel="noopener">View Project Report ↗</a>
+            </div>
+          </div>
         </li>
+
         <li class="project-card" id="project-2">
           <span class="project-tag">IoT</span>
           <div class="project-name">Water Quality Monitor &amp; Auto Pump</div>
-          <div class="project-desc">Sensor-based system that reads water quality and triggers a pump automatically based on thresholds.</div>
-          <div class="project-details"><div class="project-details-inner">More details coming soon.</div></div>
+          <div class="project-desc">Sensor-based system that reads water quality parameters and triggers a pump automatically based on configurable thresholds.</div>
+          <div class="project-hint">↓ click to expand</div>
+          <div class="project-details">
+            <div class="project-details-inner">
+              A smart IoT system that continuously monitors water conditions and automates pump control. Uses multiple sensors to track turbidity, pH, and water level — activating the pump when readings fall outside safe ranges.
+              <ul>
+                <li>Real-time turbidity and water level sensing</li>
+                <li>Automated pump relay control based on sensor thresholds</li>
+                <li>LCD display for live parameter readout</li>
+                <li>Configurable alert thresholds via code</li>
+              </ul>
+              <div class="project-tech">
+                <span class="tech-pill">Arduino</span>
+                <span class="tech-pill">IoT</span>
+                <span class="tech-pill">Sensors</span>
+                <span class="tech-pill">Relay Module</span>
+              </div>
+            </div>
+          </div>
         </li>
+
         <li class="project-card" id="project-3">
+          <span class="project-tag">Mobile · Flutter</span>
+          <div class="project-name">Pac-Man 2D Game</div>
+          <div class="project-desc">A fully offline 2D Pac-Man clone with 4 escalating difficulty levels — each new level adds a ghost and increases speed.</div>
+          <div class="project-hint">↓ click to expand</div>
+          <div class="project-details">
+            <div class="project-details-inner">
+              Built entirely with Flutter, this cross-platform Pac-Man game supports both D-pad and swipe controls. As levels progress, new ghosts are introduced and the game speed increases — keeping players on edge.
+              <ul>
+                <li>4 challenge levels with increasing ghost count and speed</li>
+                <li>D-pad and swipe gesture controls for mobile &amp; desktop</li>
+                <li>Available as Android APK (sideload install)</li>
+                <li>Custom game loop, collision detection &amp; ghost AI</li>
+              </ul>
+              <div class="project-tech">
+                <span class="tech-pill">Flutter</span>
+                <span class="tech-pill">Dart</span>
+                <span class="tech-pill">Android</span>
+                <span class="tech-pill">Game Dev</span>
+              </div>
+              <a class="project-link" href="https://github.com/Aluchashi/Pac-Man" target="_blank" rel="noopener">View on GitHub ↗</a>
+            </div>
+          </div>
+        </li>
+
+        <li class="project-card" id="project-4">
           <span class="project-tag">Software</span>
           <div class="project-name">Bus E-Ticket System</div>
-          <div class="project-desc">Digital ticketing for public buses — simplifies fare collection and eliminates paper tickets.</div>
-          <div class="project-details"><div class="project-details-inner">More details coming soon.</div></div>
+          <div class="project-desc">Digital ticketing for public buses — simplifies fare collection, seat booking, and eliminates paper tickets entirely.</div>
+          <div class="project-hint">↓ click to expand</div>
+          <div class="project-details">
+            <div class="project-details-inner">
+              A Java-based desktop application designed to digitize the bus ticketing workflow. Passengers can select routes, book seats, and receive e-tickets — while operators manage fare collection without paper.
+              <ul>
+                <li>Route selection and seat availability management</li>
+                <li>Digital fare calculation and ticket generation</li>
+                <li>Simple operator dashboard for ticket validation</li>
+                <li>Built with Java Swing for a clean desktop interface</li>
+              </ul>
+              <div class="project-tech">
+                <span class="tech-pill">Java</span>
+                <span class="tech-pill">Java Swing</span>
+                <span class="tech-pill">OOP</span>
+              </div>
+            </div>
+          </div>
         </li>
+
       </ul>
     </section>
 
@@ -394,9 +610,156 @@
   </div>
 
   <script>
+    /* ══════════════════════════════════════════
+       Pixel Neon Cursor
+    ══════════════════════════════════════════ */
+    (function() {
+      const canvas = document.getElementById('pixel-cursor');
+      const ctx = canvas.getContext('2d');
+      const W = 24, H = 24;
+      canvas.width = W; canvas.height = H;
+      canvas.style.width = W + 'px';
+      canvas.style.height = H + 'px';
+
+      let mx = -100, my = -100;
+      let clicking = false;
+
+      // Neon color cycle for the cursor
+      const neonColors = [
+        '#00ffcc', '#00e5ff', '#ff00cc', '#aaff00', '#ff6600', '#cc00ff'
+      ];
+      let colorIndex = 0;
+      let colorT = 0;
+
+      function lerpColor(a, b, t) {
+        const ah = parseInt(a.slice(1), 16);
+        const bh = parseInt(b.slice(1), 16);
+        const ar = (ah >> 16) & 0xff, ag = (ah >> 8) & 0xff, ab = ah & 0xff;
+        const br = (bh >> 16) & 0xff, bg = (bh >> 8) & 0xff, bb = bh & 0xff;
+        const r = Math.round(ar + (br - ar) * t);
+        const g = Math.round(ag + (bg - ag) * t);
+        const bv = Math.round(ab + (bb - ab) * t);
+        return '#' + ((1 << 24) + (r << 16) + (g << 8) + bv).toString(16).slice(1);
+      }
+
+      function getCurrentNeon() {
+        const c1 = neonColors[colorIndex % neonColors.length];
+        const c2 = neonColors[(colorIndex + 1) % neonColors.length];
+        return lerpColor(c1, c2, colorT);
+      }
+
+      // Pixel arrow cursor shape (16x16 grid, 1 = neon, 2 = black outline)
+      // Drawn manually as a classic arrow
+      const PIXEL = 2; // size of each pixel block
+      const arrowPixels = [
+        [1,0], [1,1], [1,2], // left column (shaft)
+        [2,1], [2,2],
+        [3,2],
+        // arrow head shape
+        [0,0],[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],
+        [1,3],[1,4],[1,5],[1,6],
+        [2,3],[2,4],[2,5],
+        [3,4],[3,5],
+        [4,5],
+      ];
+
+      // Better: use a precise pixel arrow design
+      // 0=transparent, 1=neon fill, 2=black border
+      const cursorMap = [
+        [2,0,0,0,0,0,0,0],
+        [2,2,0,0,0,0,0,0],
+        [2,1,2,0,0,0,0,0],
+        [2,1,1,2,0,0,0,0],
+        [2,1,1,1,2,0,0,0],
+        [2,1,1,1,1,2,0,0],
+        [2,1,1,1,1,1,2,0],
+        [2,1,1,2,2,0,0,0],
+        [2,1,2,2,0,0,0,0],
+        [2,2,0,2,0,0,0,0],
+        [2,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0],
+      ];
+
+      function drawCursor(neon) {
+        ctx.clearRect(0, 0, W, H);
+        const px = 2; // each "pixel" is 2x2 screen pixels
+        for (let row = 0; row < cursorMap.length; row++) {
+          for (let col = 0; col < cursorMap[row].length; col++) {
+            const v = cursorMap[row][col];
+            if (v === 0) continue;
+            ctx.fillStyle = v === 1 ? neon : '#000';
+            ctx.fillRect(col * px, row * px, px, px);
+          }
+        }
+        // Neon glow effect: draw the neon pixels again with shadow
+        if (!clicking) {
+          ctx.save();
+          ctx.shadowBlur = 6;
+          ctx.shadowColor = neon;
+          for (let row = 0; row < cursorMap.length; row++) {
+            for (let col = 0; col < cursorMap[row].length; col++) {
+              if (cursorMap[row][col] === 1) {
+                ctx.fillStyle = neon;
+                ctx.fillRect(col * px, row * px, px, px);
+              }
+            }
+          }
+          ctx.restore();
+        } else {
+          // Click pulse: slightly larger glow
+          ctx.save();
+          ctx.shadowBlur = 14;
+          ctx.shadowColor = neon;
+          ctx.globalAlpha = 0.7;
+          for (let row = 0; row < cursorMap.length; row++) {
+            for (let col = 0; col < cursorMap[row].length; col++) {
+              if (cursorMap[row][col] === 1) {
+                ctx.fillStyle = neon;
+                ctx.fillRect(col * px - 1, row * px - 1, px + 2, px + 2);
+              }
+            }
+          }
+          ctx.restore();
+        }
+      }
+
+      let animId;
+      function animate() {
+        colorT += 0.008;
+        if (colorT >= 1) { colorT = 0; colorIndex = (colorIndex + 1) % neonColors.length; }
+        const neon = getCurrentNeon();
+        drawCursor(neon);
+        canvas.style.left = mx + 'px';
+        canvas.style.top  = my + 'px';
+        animId = requestAnimationFrame(animate);
+      }
+      animate();
+
+      document.addEventListener('mousemove', e => {
+        mx = e.clientX;
+        my = e.clientY;
+      });
+      document.addEventListener('mousedown', () => { clicking = true; });
+      document.addEventListener('mouseup',   () => { clicking = false; });
+
+      // Hide on leave
+      document.addEventListener('mouseleave', () => {
+        mx = -100; my = -100;
+        canvas.style.left = '-100px';
+        canvas.style.top  = '-100px';
+      });
+    })();
+
+    /* ══════════════════════════════════════════
+       Project card expand / collapse
+    ══════════════════════════════════════════ */
     document.querySelectorAll('.project-card').forEach(card => {
       card.addEventListener('click', () => card.classList.toggle('expanded'));
     });
+
+    /* ══════════════════════════════════════════
+       Active nav on scroll
+    ══════════════════════════════════════════ */
     const sections = document.querySelectorAll('section[id]');
     const navLinks = document.querySelectorAll('nav a');
     const observer = new IntersectionObserver(entries => {
@@ -408,6 +771,23 @@
       });
     }, { rootMargin: '-20% 0px -60% 0px', threshold: 0 });
     sections.forEach(s => observer.observe(s));
+
+    /* ══════════════════════════════════════════
+       Oogway thought bubble: rotate wisdoms
+    ══════════════════════════════════════════ */
+    const wisdoms = [
+      'there are no accidents.',
+      'yesterday is history, tomorrow is a mystery.',
+      'the question is, who are you?',
+      'quit, don\'t quit. noodles, don\'t noodles.',
+      'you must believe.',
+    ];
+    const thoughtEl = document.querySelector('.oogway-thought span');
+    let wisdomIdx = 0;
+    document.querySelector('.oogway-wrap').addEventListener('mouseenter', () => {
+      wisdomIdx = (wisdomIdx + 1) % wisdoms.length;
+      thoughtEl.textContent = wisdoms[wisdomIdx];
+    });
   </script>
 </body>
 </html>
