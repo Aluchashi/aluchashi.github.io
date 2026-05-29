@@ -16,11 +16,10 @@
     #pixel-cursor {
       position: fixed;
       top: 0; left: 0;
-      width: 16px; height: 16px;
+      width: 32px; height: 32px;
       pointer-events: none;
       z-index: 99999;
       transform: translate(-50%, -50%);
-      transition: transform 0.05s linear;
       image-rendering: pixelated;
     }
 
@@ -337,7 +336,7 @@
 <body>
 
   <!-- ═══ Pixel Cursor ═══ -->
-  <canvas id="pixel-cursor" width="24" height="24"></canvas>
+  <canvas id="pixel-cursor" width="32" height="32"></canvas>
 
   <div class="wrapper">
 
@@ -611,62 +610,83 @@
 
   <script>
     /* ══════════════════════════════════════════
-       Pixel Arcade Cursor — fixed single color
+       Pixel Turtle Cursor — matches Oogway theme
     ══════════════════════════════════════════ */
     (function() {
       const canvas = document.getElementById('pixel-cursor');
       const ctx = canvas.getContext('2d');
-      const W = 24, H = 24;
-      canvas.width = W; canvas.height = H;
-      canvas.style.width = W + 'px';
-      canvas.style.height = H + 'px';
+      const SZ = 32;
+      canvas.width = SZ; canvas.height = SZ;
+      canvas.style.width = SZ + 'px';
+      canvas.style.height = SZ + 'px';
 
       let mx = -100, my = -100;
       let clicking = false;
+      let frame = 0;
 
-      // Single fixed arcade color — no cycling
-      const FILL  = '#ffffff'; // bright white pixel fill
-      const SHADE = '#aaaaaa'; // inner shading pixel
-      const BLACK = '#000000'; // hard pixel outline
+      // palette: 0=transparent, 1=shell green, 2=dark outline, 3=skin/sand, 4=shell dark, 5=eye
+      const G  = '#7a8c5e'; // shell green
+      const GD = '#5a6b42'; // shell dark pattern
+      const B  = '#2e2316'; // outline
+      const S  = '#c4a882'; // skin
+      const SD = '#a08060'; // skin shadow
+      const EY = '#1a0a00'; // eye
 
-      // 0=transparent, 1=white fill, 2=black outline, 3=inner shade
-      const cursorMap = [
-        [2,0,0,0,0,0,0,0,0,0],
-        [2,1,2,0,0,0,0,0,0,0],
-        [2,1,1,2,0,0,0,0,0,0],
-        [2,1,1,1,2,0,0,0,0,0],
-        [2,1,1,1,1,2,0,0,0,0],
-        [2,1,1,1,1,1,2,0,0,0],
-        [2,1,1,1,1,1,1,2,0,0],
-        [2,1,1,1,1,1,1,1,2,0],
-        [2,1,1,1,1,1,1,1,1,2],
-        [2,1,1,1,1,1,1,2,2,0],
-        [2,1,1,2,2,1,1,2,0,0],
-        [2,1,2,0,2,1,1,2,0,0],
-        [2,2,0,0,0,2,1,1,2,0],
-        [2,0,0,0,0,2,1,1,2,0],
-        [0,0,0,0,0,0,2,2,0,0],
+      // 16×16 pixel turtle (top-down, walking right)
+      // leg frames: frame A (legs out) and frame B (legs tucked)
+      const turtleA = [
+        [0,0,0,2,2,2,2,2,2,0,0,0,0,0,0,0],
+        [0,0,2,3,3,3,3,3,3,2,0,0,0,0,0,0],
+        [0,2,3,3,2,2,2,2,3,3,2,0,0,0,0,0],
+        [2,3,3,2,1,1,1,1,2,3,3,2,0,0,0,0],
+        [2,3,2,1,4,1,1,4,1,2,3,2,0,0,0,0],
+        [0,2,2,1,1,4,4,1,1,2,2,0,0,0,0,0],
+        [0,0,2,1,1,1,1,1,1,2,0,0,0,0,0,0],
+        [2,3,2,1,1,1,1,1,1,2,3,2,0,0,0,0],
+        [2,3,3,2,1,1,1,1,2,3,3,2,0,0,0,0],
+        [0,2,3,3,2,2,2,2,3,3,2,0,0,0,0,0],
+        [0,0,2,3,5,3,3,3,3,2,0,0,0,0,0,0],
+        [0,0,0,2,2,2,2,2,2,0,0,0,0,0,0,0],
+      ];
+      const turtleB = [
+        [0,0,0,2,2,2,2,2,2,0,0,0,0,0,0,0],
+        [0,2,3,3,3,3,3,3,3,3,2,0,0,0,0,0],
+        [2,3,3,2,2,2,2,2,2,3,3,2,0,0,0,0],
+        [2,3,2,1,1,1,1,1,1,2,3,2,0,0,0,0],
+        [0,2,2,1,4,1,1,4,1,2,2,0,0,0,0,0],
+        [0,0,2,1,1,4,4,1,1,2,0,0,0,0,0,0],
+        [0,0,2,1,1,1,1,1,1,2,0,0,0,0,0,0],
+        [0,2,2,1,1,1,1,1,1,2,2,0,0,0,0,0],
+        [2,3,2,1,1,1,1,1,1,2,3,2,0,0,0,0],
+        [2,3,3,2,2,2,2,2,2,3,3,2,0,0,0,0],
+        [0,2,3,3,3,5,3,3,3,3,2,0,0,0,0,0],
+        [0,0,0,2,2,2,2,2,2,0,0,0,0,0,0,0],
       ];
 
-      const px = 2; // each "pixel" = 2×2 screen pixels
+      const colorMap = { 1:G, 2:B, 3:S, 4:GD, 5:EY };
+      const px = 2;
 
-      function drawCursor() {
-        ctx.clearRect(0, 0, W, H);
-
-        for (let row = 0; row < cursorMap.length; row++) {
-          for (let col = 0; col < cursorMap[row].length; col++) {
-            const v = cursorMap[row][col];
-            if (v === 0) continue;
-            if (v === 2) ctx.fillStyle = BLACK;
-            else if (v === 3) ctx.fillStyle = SHADE;
-            else ctx.fillStyle = clicking ? '#ffee88' : FILL; // yellow tint on click
-            ctx.fillRect(col * px, row * px, px, px);
+      function drawTurtle(grid) {
+        ctx.clearRect(0, 0, SZ, SZ);
+        for (let r = 0; r < grid.length; r++) {
+          for (let c = 0; c < grid[r].length; c++) {
+            const v = grid[r][c];
+            if (!v) continue;
+            ctx.fillStyle = colorMap[v];
+            ctx.fillRect(c * px, r * px, px, px);
           }
         }
+        // tiny hotspot dot (top-left of shell = tip of head)
+        ctx.fillStyle = B;
+        ctx.fillRect(0, 0, 2, 2);
       }
 
+      let tick = 0;
       function loop() {
-        drawCursor();
+        tick++;
+        // legs animate every 12 frames; freeze on click
+        const useFrame = clicking ? turtleA : (Math.floor(tick / 10) % 2 === 0 ? turtleA : turtleB);
+        drawTurtle(useFrame);
         canvas.style.left = mx + 'px';
         canvas.style.top  = my + 'px';
         requestAnimationFrame(loop);
